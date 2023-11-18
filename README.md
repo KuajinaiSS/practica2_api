@@ -1,10 +1,4 @@
-# Nombre_del_Proyecto
-
-Descripción corta del proyecto en una línea.
-
-## Descripción
-
-Aquí puedes proporcionar una descripción general del proyecto, incluyendo tanto el frontend como el backend. Describe el propósito del proyecto, sus características principales y cualquier información relevante para los desarrolladores que utilicen o contribuyan al mismo.
+# Practica 2 API
 
 ### Frontend (React con Tailwind, Axios y React Router DOM)
 
@@ -20,7 +14,7 @@ Aquí puedes proporcionar una descripción general del proyecto, incluyendo tant
 
 #### Uso del Frontend
 
-1. Inicia el servidor de desarrollo: `npm start`
+1. Inicia el servidor de desarrollo: `npm run start`
 2. Abre tu navegador en `http://localhost:3000` para ver la aplicación en ejecución
 
 ### Backend (Laravel)
@@ -41,7 +35,6 @@ Aquí puedes proporcionar una descripción general del proyecto, incluyendo tant
 
 7. Instalación de Paquetes de NuGet para .NET (si aplicable)
 Ejecuta los siguientes comandos en el directorio del backend para instalar los paquetes de NuGet necesarios:
-
 ```bash
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 7.0.11
 dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 7.0.11
@@ -51,4 +44,3 @@ dotnet add package BCrypt.Net-Next --version 4.0.3
 ```
 
 8. Ejecuta el servidor de desarrollo: `php artisan serve`
-
