@@ -4,15 +4,62 @@ import '../index.css';
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState<any>({});
+    const [formData, setFormData] = useState<any>({
+        name: '',
+        Lastname: '',
+        email: '',
+        city: '',
+        country: '',
+        summary: ''
+    });
+    const [isEditing, setIsEditing] = useState(false); // Estado para controlar si se está editando o no
 
     useEffect(() => {
         agent.profile.get()
             .then((res) => {
-                console.log(res);
                 setProfile(res);
+                setFormData(res); // Setear los datos iniciales del formulario con los datos del perfil
             })
             .catch((err) => console.log(err));
     }, []);
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Suponiendo que formData contiene los datos del perfil en el formato correcto
+        agent.profile.update(formData)
+            .then((res) => {
+                setProfile(res); // Actualiza el estado con la respuesta del backend
+                setIsEditing(false);
+            })
+            .catch((err) => console.log(err));
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const [editingFramework, setEditingFramework] = useState<any>(null); // Estado para el framework a editar
+
+    const handleEditFramework = (frameworkId: number) => {
+        const frameworkToEdit = profile.frameworks.find((framework: any) => framework.id === frameworkId);
+        setEditingFramework(frameworkToEdit); // Almacena el framework a editar en el estado
+        setIsEditing(true); // Activa el modo de edición
+    };
+
+    const handleDeleteFramework = (frameworkId: number) => {
+
+        // Lógica para eliminar el framework con el ID dado
+        agent.profile.deleteFramework(profile.id, frameworkId)
+            .then((res) => {
+                // Actualizar el estado o volver a cargar los datos después de la eliminación
+            })
+            .catch((err) => console.log(err));
+    };
+
 
     return (
         <div className="text-center">
@@ -55,20 +102,86 @@ export default function ProfilePage() {
                                     <th className="border py-2 px-4 bg-sky-500 text-white capitalize w-1/3"> <b>Tecnologia</b></th>
                                     <th className="border py-2 px-4 bg-sky-500 text-white capitalize w-1/3"> <b>Conocimiento</b></th>
                                     <th className="border py-2 px-4 bg-sky-500 text-white capitalize w-1/3"> <b>Año</b></th>
+                                    <th className="border py-2 px-4 bg-sky-500 text-white capitalize w-1/3"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {profile.frameworks && profile.frameworks.map((framework: any) => (
-                                    <tr className="border" key={framework.id}>
-                                        <td className="border py-2 px-4 bg-gray-100 text-black capitalize"> <b>{framework.name}</b> </td>
-                                        <td className="border py-2 px-4 bg-gray-100 text-black capitalize"> <b>{framework.level}</b> </td>
-                                        <td className="border py-2 px-4 bg-gray-100 text-black capitalize"> <b>{framework.year}</b> </td>
-                                    </tr>
-                                ))}
+                                {profile.frameworks &&
+                                    profile.frameworks.map((framework: any) => (
+                                        <tr className="border" key={framework.id}>
+                                            <td className="border py-2 px-4 bg-gray-100 text-black capitalize">
+                                                <b>{framework.name}</b>
+                                            </td>
+                                            <td className="border py-2 px-4 bg-gray-100 text-black capitalize">
+                                                <b>{framework.level}</b>
+                                            </td>
+                                            <td className="border py-2 px-4 bg-gray-100 text-black capitalize">
+                                                <b>{framework.year}</b>
+                                            </td>
+                                            <td className="border py-2 px-4 bg-gray-100 text-black">
+                                                <button
+                                                    onClick={() => handleDeleteFramework(framework.id)}
+                                                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
+
                     </div>
                 </section>
+
+                <section className="bg-contenedor rounded-lg p-6 mt-4 mx-auto sm:mx-4 md:mx-8 lg:mx-16 xl:mx-24 shadow-shadow">
+                    <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+                        <h2 className="text-2xl font-semibold mb-4">Edit Profile</h2>
+
+                        {/* Inputs del formulario con handleInputChange */}
+                        {/* Name */}
+                        <div className="mb-4">
+                            <label htmlFor="name" className="block mb-1">Name</label>
+                            <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} className="border rounded-md w-full px-3 py-2" />
+                        </div>
+
+                        {/* Lastname */}
+                        <div className="mb-4">
+                            <label htmlFor="Lastname" className="block mb-1">Lastname</label>
+                            <input type="text" id="Lastname" name="Lastname" value={formData.Lastname} onChange={handleInputChange} className="border rounded-md w-full px-3 py-2" />
+                        </div>
+
+                        {/* Email */}
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block mb-1">Email</label>
+                            <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} className="border rounded-md w-full px-3 py-2" />
+                        </div>
+
+                        {/* City */}
+                        <div className="mb-4">
+                            <label htmlFor="city" className="block mb-1">City</label>
+                            <input type="text" id="city" name="city" value={formData.city} onChange={handleInputChange} className="border rounded-md w-full px-3 py-2" />
+                        </div>
+
+                        {/* Country */}
+                        <div className="mb-4">
+                            <label htmlFor="country" className="block mb-1">Country</label>
+                            <input type="text" id="country" name="country" value={formData.country} onChange={handleInputChange} className="border rounded-md w-full px-3 py-2" />
+                        </div>
+
+                        {/* Summary */}
+                        <div className="mb-4">
+                            <label htmlFor="summary" className="block mb-1">Summary</label>
+                            <textarea id="summary" name="summary" value={formData.summary} onChange={handleInputChange} className="border rounded-md w-full px-3 py-2" />
+                        </div>
+
+                        {/* Botón para guardar cambios */}
+                        <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md">
+                            Save Changes
+                        </button>
+                    </form>
+                </section>
+
             </main>
         </div>
     )
