@@ -25,10 +25,9 @@ export default function ProfilePage() {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Suponiendo que formData contiene los datos del perfil en el formato correcto
         agent.profile.update(formData)
             .then((res) => {
-                setProfile(res); // Actualiza el estado con la respuesta del backend
+                setProfile(res);
                 setIsEditing(false);
             })
             .catch((err) => console.log(err));
@@ -55,7 +54,18 @@ export default function ProfilePage() {
         // Lógica para eliminar el framework con el ID dado
         agent.profile.deleteFramework(profile.id, frameworkId)
             .then((res) => {
-                // Actualizar el estado o volver a cargar los datos después de la eliminación
+                agent.profile.get()
+                loadProfileData();
+            })
+            .catch((err) => console.log(err));
+    };
+
+    // acualizar pagina
+    const loadProfileData = () => {
+        agent.profile.get()
+            .then((res) => {
+                setProfile(res);
+                setFormData(res); // Actualiza los datos del perfil
             })
             .catch((err) => console.log(err));
     };
